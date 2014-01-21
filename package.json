@@ -9,5 +9,12 @@
   "engines": {
     "node": ">= 0.10.0"
   },
-  "main": "logger.coffee"
+  "scripts": {
+    "build":        "coffee --bare --compile --output lib *.coffee",
+    "prepublish":   "coffee --bare --compile --output lib *.coffee"
+  },
+  "devDependencies": {
+    "coffee-script":          "1.6.3"
+  },
+  "main": "lib/logger.js"
 }
