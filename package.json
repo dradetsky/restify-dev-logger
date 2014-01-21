@@ -1,0 +1,13 @@
+{
+  "name": "restify-dev-logger",
+  "description": "Sort of like connect's logger('dev'), but for restify.",
+  "author": "Daniel Radetsky",
+  "version": "0.0.1",
+  "dependencies": {
+    "bytes": "0.2.1"
+  },
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "main": "logger.coffee"
+}
