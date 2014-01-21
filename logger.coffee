@@ -1,34 +1,41 @@
 bytes = require 'bytes'
 
-devLogLine = (req, res) ->
-  status = res.statusCode
-  len = parseInt res.getHeader('Content-Length'), 10
+devLogLine = (useColor) ->
+  return (req, res) ->
+    status = res.statusCode
+    len = parseInt res.getHeader('Content-Length'), 10
 
-  if status >= 500
-    color = 31
-  else if status >= 400
-    color = 33
-  else if status >= 300
-    color = 36
-  else
-    color = 32
+    if status >= 500
+      color = 31
+    else if status >= 400
+      color = 33
+    else if status >= 300
+      color = 36
+    else
+      color = 32
 
-  if isNaN len
-    len_s = ''
-  else
-    len_s = ' - ' + bytes len
+    if isNaN len
+      len_s = ''
+    else
+      len_s = ' - ' + bytes len
 
-  # log_str = '\x1b[90m' + req.method
-  #   + ' ' + (req.originalUrl || req.url) + ' '
-  #   + '\x1b[' + color + 'm' + status
-  #   + ' \x1b[90m'
-  #   + (new Date - req._startTime)
-  #   + 'ms' + len_s
-  #   + '\x1b[0m'
+    # colors
+    ansi_grey = '\x1b[90m'
+    ansi_color_for_status = '\x1b[' + color + 'm'
+    ansi_clear = '\x1b[0m'
 
-  log_str = '\x1b[90m' + req.method + ' ' + (req.originalUrl || req.url) + ' '    + '\x1b[' + color + 'm' + status     + ' \x1b[90m'     + (new Date - req._startTime)     + 'ms' + len_s     + '\x1b[0m'
-
-  return log_str
+    line = ""
+    line += ansi_grey if useColor
+    line += req.method + ' '
+    line += (req.originalUrl || req.url) + ' '
+    line += ansi_color_for_status if useColor
+    line += status + ' '
+    line += ansi_grey if useColor
+    line += (new Date - req._startTime) + 'ms'
+    line += len_s
+    line += ansi_clear
+    
+    return line
 
 makeLogger = (logfn) ->
   stream = process.stdout
@@ -45,6 +52,9 @@ makeLogger = (logfn) ->
     res.on 'close', logRequest
     next()
 
-dev = makeLogger(devLogLine)
+dev = makeLogger(devLogLine(true))
+
+devbw = makeLogger(devLogLine(false))
 
 exports.dev = dev
+exports.devbw = devbw
